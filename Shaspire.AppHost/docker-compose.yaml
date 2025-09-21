@@ -1,0 +1,17 @@
+﻿services:
+  shaspire.apphost:
+    image: shaspire.apphost
+    build:
+      context: .
+      dockerfile: Shaspire.AppHost/Dockerfile
+
+
+  shaspire-sql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - 1433:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=z4v)x%9rA_Uh83pM
+      
+    
