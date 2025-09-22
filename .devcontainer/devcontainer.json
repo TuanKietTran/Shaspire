@@ -35,7 +35,6 @@
             "label": "Aspire Dashboard"
         }
     },
-    "remoteUser": "vscode",
     "overrideFeatureSpec": {
         "docker-in-docker": {
             "moby": true,
