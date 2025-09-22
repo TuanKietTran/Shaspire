@@ -1,5 +1,10 @@
-# Use the latest .NET 9 Dev Container image (adjust for your .NET version, e.g., 8.0-1 for .NET 8)
+# Use the .NET 9 Dev Container image (adjust if using .NET 8)
 FROM mcr.microsoft.com/devcontainers/dotnet:1-9.0-bookworm-slim
+
+# Install additional dependencies (e.g., for Aspire Dashboard or tools)
+RUN apt-get update && apt-get install -y \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install .NET Aspire workload
 RUN dotnet workload install aspire
@@ -7,8 +12,15 @@ RUN dotnet workload install aspire
 # Trust the ASP.NET Core HTTPS development certificate
 RUN dotnet dev-certs https --trust
 
-# Install any additional tools if needed (e.g., for Aspire dashboard or testing)
-# RUN apt-get update && apt-get install -y <tool>
+# Create a non-root user 'vscode' for Codespaces compatibility
+ARG USERNAME=vscode
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+
+RUN groupadd --gid $USER_GID $USERNAME \
+    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
+    && echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/$USERNAME \
+    && chmod 0440 /etc/sudoers.d/$USERNAME
 
 # Set working directory
 WORKDIR /workspace
