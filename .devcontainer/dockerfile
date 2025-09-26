@@ -16,4 +16,4 @@ RUN dotnet dev-certs https --trust
 # RUN apt-get update && apt-get install -y <tool>
 
 # Set working directory
-WORKDIR /workspace
+WORKDIR /workspaces
