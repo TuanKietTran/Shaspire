@@ -1,8 +1,13 @@
 # Use the latest .NET 9 Dev Container image (adjust for your .NET version, e.g., 8.0-1 for .NET 8)
 FROM mcr.microsoft.com/devcontainers/dotnet:1-9.0-bookworm-slim
+# Install additional dependencies (e.g., for Aspire Dashboard or tools)
+RUN apt-get update && apt-get install -y \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install .NET Aspire workload
 RUN dotnet workload install aspire
+
 
 # Trust the ASP.NET Core HTTPS development certificate
 RUN dotnet dev-certs https --trust
