@@ -1,48 +1,74 @@
 {
-    "name": ".NET Aspire",
-    // "dockerComposeFile": "../docker-compose.yml",  // Optional: If your Aspire project uses docker-compose for resources
-    "service": "app",  // Optional: Matches a service in docker-compose.yml if used
+    "name": ".NET 9 with Aspire",
+    // Use the custom Dockerfile instead of docker-compose or implicit base images
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": "."
+    },
     "workspaceFolder": "/workspaces",
     "features": {
+        // Docker-in-Docker for Aspire's containerized resources (e.g., Redis, SQL Server)
         "ghcr.io/devcontainers/features/docker-in-docker:2": {
             "version": "latest",
-            "enableNonRootDocker": "true"
+            "enableNonRootDocker": true,
+            "moby": true,
+            "dockerDashComposeVersion": "v2"
         },
+        // GitHub CLI for any repo or CI/CD interactions
         "ghcr.io/devcontainers/features/github-cli:1": {
             "version": "latest"
         }
     },
-    "postCreateCommand": "dotnet restore && dotnet workload install aspire",  // Restore packages and install Aspire workload
+    // Run restore and Aspire workload install after container creation
+    "postCreateCommand": "dotnet restore && dotnet workload install aspire",
     "customizations": {
         "vscode": {
             "extensions": [
-                "ms-dotnettools.vscode-dotnet-runtime",
-                "ms-dotnettools.vscode-dotnet-aspire",  // Official Aspire extension for VS Code
+                // Use C# Dev Kit for better .NET 9 support
+                "ms-dotnettools.csdevkit",
+                // Explicitly avoid the runtime extension to prevent auto-installing .NET 8
+                // "ms-dotnettools.vscode-dotnet-runtime",
+                "ms-dotnettools.vscode-dotnet-aspire", // Aspire extension for dashboard and orchestration
                 "ms-vscode-remote.remote-containers",
                 "ms-azuretools.vscode-docker"
-            ]
+            ],
+            "settings": {
+                // Prevent C# extension from auto-installing .NET 8
+                "dotnetAcquisitionExtension.existingDotnetPath": [
+                    "/usr/share/dotnet"
+                ],
+                // Ensure .NET 9 SDK is used
+                "dotnet.defaultSolution": "sln",
+                // Optional: Configure Aspire dashboard settings if needed
+                "dotnet.aspire.dashboard.enabled": true
+            }
         }
     },
-    "forwardPorts": [  // Forward common Aspire ports (adjust based on your AppHost)
-        8080,  // Default web app port
-        18888  // Aspire Dashboard
+    // Forward ports for Aspire and web apps
+    "forwardPorts": [
+        8080, // Default web app port
+        18888 // Aspire Dashboard
     ],
     "portsAttributes": {
         "8080": {
-            "label": "Web App"
+            "label": "Web App",
+            "protocol": "http"
         },
         "18888": {
-            "label": "Aspire Dashboard"
+            "label": "Aspire Dashboard",
+            "protocol": "http"
         }
     },
-    "overrideFeatureSpec": {
-        "docker-in-docker": {
-            "moby": true,
-            "dockerDashComposeVersion": "v2"
-        }
-    },
+    // Mounts for Docker socket and HTTPS certs
     "mounts": [
-        "source=/var/run/docker.sock,target=/var/run/docker-host.sock,type=bind",
-        "source=${localWorkspaceFolder}/.aspnet,target=/root/.aspnet,type=bind,consistency=cached"  // Persist HTTPS certs
-    ]
+        // Docker socket for Docker-in-Docker (Aspire resource containers)
+        "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind",
+        // Persist ASP.NET Core HTTPS dev certs
+        "source=${localWorkspaceFolder}/.aspnet,target=/root/.aspnet,type=bind,consistency=cached"
+    ],
+    // Optional: Optimize for Aspire's resource needs
+    "hostRequirements": {
+        "cpus": 4,
+        "memory": "8gb"
+    }
 }
