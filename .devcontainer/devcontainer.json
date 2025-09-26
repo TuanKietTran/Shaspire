@@ -2,7 +2,7 @@
     "name": ".NET Aspire",
     // "dockerComposeFile": "../docker-compose.yml",  // Optional: If your Aspire project uses docker-compose for resources
     "service": "app",  // Optional: Matches a service in docker-compose.yml if used
-    "workspaceFolder": "/workspace",
+    "workspaceFolder": "/workspaces",
     "features": {
         "ghcr.io/devcontainers/features/docker-in-docker:2": {
             "version": "latest",
