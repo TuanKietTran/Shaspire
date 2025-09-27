@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
 RUN groupadd -g 999 docker || true \
     && usermod -aG docker $(whoami) \
     && chown root:docker /var/run/docker.sock || true \
-    && chmod 666 /var/run/docker.sock || true
+    && sudo chmod 666 /var/run/docker.sock || true
 
 # Install .NET Aspire workload
 RUN dotnet workload install aspire
