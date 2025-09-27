@@ -1,0 +1,40 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch .NET Aspire AppHost",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Shaspire.AppHost/bin/Debug/net9.0/Shaspire.AppHost",
+            "args": [],
+            "cwd": "${workspaceFolder}/Shaspire.AppHost",
+            "stopAtEntry": false,
+            "console": "internalConsole",
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "DOTNET_ENVIRONMENT": "Development"
+            },
+            "requireExactSource": false,
+            "enableStepFiltering": true
+        },
+        {
+            "name": "Launch Aspire Dashboard",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Shaspire.AppHost/bin/Debug/net9.0/Shaspire.AppHost",
+            "args": ["--dashboard"],
+            "cwd": "${workspaceFolder}/Shaspire.AppHost",
+            "stopAtEntry": false,
+            "console": "internalConsole",
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "DOTNET_ENVIRONMENT": "Development",
+                "ASPIRE_ALLOW_UNSECURED_TRANSPORT": "true"
+            },
+            "requireExactSource": false,
+            "enableStepFiltering": true
+        }
+    ]
+}

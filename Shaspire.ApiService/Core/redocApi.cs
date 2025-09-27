@@ -30,7 +30,7 @@ public static class RedocApi
             var baseUrl = $"{context.Request.Scheme}://{context.Request.Host}";
             var url = $"{baseUrl}{openApiUrl}";
             var title = env.ApplicationName ?? "API Documentation";
-            var html = GenerateRedocHtml(title, url);
+            var html = GenerateRedocHtml(title, openApiUrl);
             return Results.Content(html, "text/html");
         })
         .WithName("ReDocUI")
