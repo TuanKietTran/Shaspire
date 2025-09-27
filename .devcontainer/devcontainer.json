@@ -4,7 +4,7 @@
         "dockerfile": "Dockerfile",
         "context": "."
     },
-    "workspaceFolder": "/workspaces/Shaspire",
+    "workspaceFolder": "/workspaces",
     "features": {
         "ghcr.io/devcontainers/features/docker-in-docker:2": {
             "version": "latest",
@@ -16,8 +16,8 @@
             "version": "latest"
         }
     },
-    // Run setup tasks in Shaspire directory
-    "postCreateCommand": "/bin/sh -c 'sudo usermod -aG docker $(whoami) && dotnet dev-certs https --trust && echo \"Checking .NET version...\" && dotnet --version && cd /workspaces/Shaspire && echo \"Running restore...\" && dotnet restore || echo \"Restore failed, check for .sln/.csproj in /workspaces/Shaspire\"'",
+    // Run dev-certs and restore as codespace user
+    "postCreateCommand": "/bin/sh -c 'sudo usermod -aG docker $(whoami) && dotnet dev-certs https --trust && echo \"Checking .NET version...\" && dotnet --version && echo \"Running restore...\" && dotnet restore || echo \"Restore failed, check for .sln/.csproj in /workspaces\"'",
     "customizations": {
         "vscode": {
             "extensions": [
@@ -28,19 +28,19 @@
             ],
             "settings": {
                 "dotnetAcquisitionExtension.existingDotnetPath": ["/usr/share/dotnet"],
-                "dotnet.defaultSolution": "Shaspire.sln",
+                "dotnet.defaultSolution": "sln",
                 "dotnet.aspire.dashboard.enabled": true
             }
         }
     },
-    "forwardPorts": [8080, 8081, 18888],
+    "forwardPorts": [8080, 18888],
     "portsAttributes": {
-        "8080": { "label": "Web App HTTP", "protocol": "http" },
-        "8081": { "label": "Web App HTTPS", "protocol": "https" },
+        "8080": { "label": "Web App", "protocol": "http" },
         "18888": { "label": "Aspire Dashboard", "protocol": "http" }
     },
     "mounts": [
         "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind",
+        // Mount for codespace user's certificate store
         "source=${localWorkspaceFolder}/.aspnet,target=/home/codespace/.aspnet,type=bind,consistency=cached"
     ],
     "hostRequirements": {

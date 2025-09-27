@@ -1,17 +1,22 @@
 # Use the official .NET 9 Dev Container image
 FROM mcr.microsoft.com/devcontainers/dotnet:dev-9.0-bookworm-slim
 
-# Install additional dependencies (including ca-certificates for trust)
+# Install additional dependencies
 RUN apt-get update && apt-get install -y \
     curl \
-    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
+
+# Create docker group and set socket permissions
+RUN groupadd -g 999 docker || true \
+    && usermod -aG docker $(whoami) \
+    && chown root:docker /var/run/docker.sock || true \
+    && chmod 666 /var/run/docker.sock || true
 
 # Install .NET Aspire workload
 RUN dotnet workload install aspire
 
-# Ensure the container user is in the docker group
-RUN usermod -aG docker codespace || true
+# Trust the ASP.NET Core HTTPS development certificate
+RUN dotnet dev-certs https --trust
 
 # Set working directory
 WORKDIR /workspaces
